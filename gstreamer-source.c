@@ -528,9 +528,9 @@ obs_properties_t *gstreamer_source_get_properties(void *data)
 	obs_properties_add_bool(props, "disable_async_appsink_audio",
 				"Set async=false in appsink (audio)");
    obs_properties_add_bool(props, "async_unbuffered",
-				"turn off obs source video buffering");
+				"Turn off obs source video buffering");
 	obs_properties_add_bool(props, "async_decoupled",
-				"decouple audio from video in obs source ");
+				"Decouple audio from video in obs source ");
 	obs_properties_add_bool(props, "restart_on_eos",
 				"Try to restart when end of stream is reached");
 	obs_properties_add_bool(
