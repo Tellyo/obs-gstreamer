@@ -433,8 +433,8 @@ void *gstreamer_source_create(obs_data_t *settings, obs_source_t *source)
 {
 	data_t *data = g_new0(data_t, 1);
 
-        obs_source_set_async_unbuffered(source, true);
-        obs_source_set_async_decoupled(source, true);
+	obs_source_set_async_unbuffered(source, obs_data_get_bool(settings, "async_unbuffered"));
+   obs_source_set_async_decoupled(source, obs_data_get_bool(settings, "async_decoupled"));
 
 	data->source = source;
 	data->settings = settings;
@@ -485,6 +485,8 @@ void gstreamer_source_get_defaults(obs_data_t *settings)
 	obs_data_set_default_bool(settings, "sync_appsink_audio", true);
 	obs_data_set_default_bool(settings, "disable_async_appsink_video", false);
 	obs_data_set_default_bool(settings, "disable_async_appsink_audio", false);
+	obs_data_set_default_bool(settings, "async_unbuffered", true);
+	obs_data_set_default_bool(settings, "async_decoupled", true);
 	obs_data_set_default_bool(settings, "restart_on_eos", true);
 	obs_data_set_default_bool(settings, "restart_on_error", false);
 	obs_data_set_default_int(settings, "restart_timeout", 2000);
@@ -521,10 +523,14 @@ obs_properties_t *gstreamer_source_get_properties(void *data)
 				"Sync appsink to clock (video)");
 	obs_properties_add_bool(props, "sync_appsink_audio",
 				"Sync appsink to clock (audio)");
-    obs_properties_add_bool(props, "disable_async_appsink_video",
+   obs_properties_add_bool(props, "disable_async_appsink_video",
 				"Set async=false in appsink (video)");
 	obs_properties_add_bool(props, "disable_async_appsink_audio",
 				"Set async=false in appsink (audio)");
+   obs_properties_add_bool(props, "async_unbuffered",
+				"turn off obs source video buffering");
+	obs_properties_add_bool(props, "async_decoupled",
+				"decouple audio from video in obs source ");
 	obs_properties_add_bool(props, "restart_on_eos",
 				"Try to restart when end of stream is reached");
 	obs_properties_add_bool(
