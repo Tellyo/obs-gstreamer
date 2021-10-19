@@ -128,6 +128,9 @@ static GstFlowReturn video_new_sample(GstAppSink *appsink, gpointer user_data)
 		obs_data_get_bool(data->settings, "use_timestamps_video")
 			? GST_BUFFER_PTS(buffer)
 			: data->frame_count++;
+	if(obs_data_get_bool(settings, "debug_timestamps")) {
+		blog(LOG_INFO, "video pts: ", frame.timestamp);
+	}
 
 	frame.width = video_info.width;
 	frame.height = video_info.height;
@@ -231,6 +234,10 @@ static GstFlowReturn audio_new_sample(GstAppSink *appsink, gpointer user_data)
 			? GST_BUFFER_PTS(buffer)
 			: data->audio_count++ * GST_SECOND *
 				  (audio.frames / (double)audio_info.rate);
+
+	if(obs_data_get_bool(settings, "debug_timestamps")) {
+		blog(LOG_INFO, "audio pts: ", audio.timestamp);
+	}
 
 	switch (audio_info.channels) {
 	case 1:
@@ -434,7 +441,7 @@ void *gstreamer_source_create(obs_data_t *settings, obs_source_t *source)
 	data_t *data = g_new0(data_t, 1);
 
 	obs_source_set_async_unbuffered(source, obs_data_get_bool(settings, "async_unbuffered"));
-   obs_source_set_async_decoupled(source, obs_data_get_bool(settings, "async_decoupled"));
+    obs_source_set_async_decoupled(source, obs_data_get_bool(settings, "async_decoupled"));
 
 	data->source = source;
 	data->settings = settings;
@@ -492,6 +499,7 @@ void gstreamer_source_get_defaults(obs_data_t *settings)
 	obs_data_set_default_int(settings, "restart_timeout", 2000);
 	obs_data_set_default_bool(settings, "stop_on_hide", true);
 	obs_data_set_default_bool(settings, "clear_on_end", true);
+	obs_data_set_default_bool(settings, "debug_timestamps", false);
 }
 
 void gstreamer_source_update(void *data, obs_data_t *settings);
@@ -543,6 +551,7 @@ obs_properties_t *gstreamer_source_get_properties(void *data)
 	obs_properties_add_bool(
 		props, "clear_on_end",
 		"Clear image data after end-of-stream or error");
+	obs_properties_add_bool(props, "debug_timestamps", "Log A/V PTS");
 	obs_properties_add_button2(props, "apply", "Apply", on_apply_clicked,
 				   data);
 
