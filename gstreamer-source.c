@@ -129,7 +129,7 @@ static GstFlowReturn video_new_sample(GstAppSink *appsink, gpointer user_data)
 			? GST_BUFFER_PTS(buffer)
 			: data->frame_count++;
 	if(obs_data_get_bool(data->settings, "debug_timestamps")) {
-		blog(LOG_INFO, "video pts: ", frame.timestamp);
+		blog(LOG_INFO, "video pts: %llu", frame.timestamp);
 	}
 
 	frame.width = video_info.width;
@@ -236,7 +236,7 @@ static GstFlowReturn audio_new_sample(GstAppSink *appsink, gpointer user_data)
 				  (audio.frames / (double)audio_info.rate);
 
 	if(obs_data_get_bool(data->settings, "debug_timestamps")) {
-		blog(LOG_INFO, "audio pts: ", audio.timestamp);
+		blog(LOG_INFO, "audio pts: %llu", audio.timestamp);
 	}
 
 	switch (audio_info.channels) {
