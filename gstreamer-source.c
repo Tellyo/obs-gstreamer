@@ -322,8 +322,8 @@ static void create_pipeline(data_t *data)
 	GError *err = NULL;
 
 	gchar *pipeline = g_strdup_printf(
-		"videoconvert name=video ! video/x-raw, format={I420,NV12,BGRA,BGRx,RGBx,RGBA,YUY2,YVYU,UYVY} ! appsink name=video_appsink "
-		"audioconvert name=audio ! audioresample ! audio/x-raw, format={U8,S16LE,S32LE,F32LE}, channels={1,2,3,4,5,6,8}, layout=interleaved ! appsink name=audio_appsink "
+		"videoconvert name=video ! videorate ! video/x-raw, format={I420,NV12,BGRA,BGRx,RGBx,RGBA,YUY2,YVYU,UYVY}, framerate=30/1 ! appsink name=video_appsink "
+		"audioconvert name=audio ! audioresample ! audio/x-raw, format={U8,S16LE,S32LE,F32LE}, channels={1,2,3,4,5,6,8}, layout=interleaved, rate=48000 ! appsink name=audio_appsink "
 		"%s",
 		obs_data_get_string(data->settings, "pipeline"));
 
